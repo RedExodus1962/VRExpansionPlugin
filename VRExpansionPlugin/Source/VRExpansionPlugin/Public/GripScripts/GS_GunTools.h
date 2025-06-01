@@ -159,7 +159,17 @@ class VREXPANSIONPLUGIN_API UGS_GunTools : public UGS_Default
 {
 	GENERATED_BODY()
 public:
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Recoil")
+	float AdditionalRecoilPitch;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Recoil")
+	float AdditionalRecoilPitchTarget;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Recoil")
+	float AdditionalRecoilLerpSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Recoil")
+	float AdditionalRecoilDecaySpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Recoil")
+	float AdditionalRecoilPerShot;
+	
 	UGS_GunTools(const FObjectInitializer& ObjectInitializer);
 
 	virtual void OnGrip_Implementation(UGripMotionControllerComponent * GrippingController, const FBPActorGripInformation & GripInformation) override;
@@ -259,11 +269,11 @@ public:
 
 	// Recoil decay rate, how fast it decays back to baseline
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Recoil", meta = (editcondition = "bHasRecoil"))
-		float DecayRate;
+		float RecoilDecayRate;
 
 	// Recoil lerp rate, how long it takes to lerp to the target recoil amount (0.0f would be instant)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Recoil", meta = (editcondition = "bHasRecoil"))
-		float LerpRate;
+		float RecoilLerpRate;
 
 	// Stores the current amount of recoil
 	FTransform BackEndRecoilStorage;
