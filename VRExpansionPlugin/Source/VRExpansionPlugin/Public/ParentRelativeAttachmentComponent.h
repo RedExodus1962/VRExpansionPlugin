@@ -137,6 +137,7 @@ public:
 	FQuat GetCalculatedRotation(FRotator InverseRot, float DeltaTime)
 	{
 		FRotator FinalRot = FRotator::ZeroRotator;
+
 		if (FPlatformMath::Abs(FMath::FindDeltaAngleDegrees(InverseRot.Yaw, LastRot)) < YawTolerance)	// This is never true with the default value of 0.0f
 		{
 			if (!bWasSetOnce)
@@ -149,7 +150,9 @@ public:
 			
 			if (bLerpTransition && !FMath::IsNearlyEqual(LastLerpVal, LerpTarget))
 			{
-				LastLerpVal = FMath::FixedTurn(LastLerpVal, LerpTarget, LerpSpeed * DeltaTime);
+				// Use FindDeltaAngleDegrees to ensure shortest path interpolation
+				float DeltaYaw = FMath::FindDeltaAngleDegrees(LastLerpVal, LerpTarget);
+				LastLerpVal = LastLerpVal + FMath::FInterpTo(0.f, DeltaYaw, DeltaTime, LerpSpeed);
 				FinalRot = FRotator(0, LastLerpVal, 0);
 			}
 			else
@@ -164,7 +167,10 @@ public:
 			if (!FMath::IsNearlyZero(YawTolerance))
 			{
 				LerpTarget = FRotator::ClampAxis(InverseRot.Yaw);
-				LastLerpVal = FMath::FixedTurn(/*LastRot*/LastLerpVal, LerpTarget, LerpSpeed * DeltaTime);
+
+				// Find the shortest path for interpolation using FindDeltaAngleDegrees
+				float DeltaYaw = FMath::FindDeltaAngleDegrees(LastLerpVal, LerpTarget);
+				LastLerpVal = LastLerpVal + FMath::FInterpTo(0.f, DeltaYaw, DeltaTime, LerpSpeed);
 				FinalRot = FRotator(0, LastLerpVal, 0);
 				OnYawToleranceExceeded.Broadcast();
 			}
